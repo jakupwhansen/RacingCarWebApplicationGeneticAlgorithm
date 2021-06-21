@@ -13,7 +13,7 @@
                 <button type="button" onclick="SpeedDown()">Speed DOWN</button>
             </td>            
         </tr>
-        <tr>
+        <tr> 
             <td style="vertical-align:middle;">                
                 <canvas id="myCanvas" width="800" height="400" style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
@@ -36,14 +36,23 @@
         var aktuelColor = "black";
 
         function startAll() {
+            hentBillede();
 
             document.body.addEventListener('keydown', doKeyDown);
 
-
-            Bane.src = 'bane.png';
-            //Bane.crossOrigin = "Anonymous";
-            myTimer = setInterval(Timer, 20);
+     
+            
         }
+
+        function hentBillede() {            
+            Bane.src = 'bane.png';
+            Bane.onload = function ()
+            {
+                myTimer = setInterval(Timer, 20);
+                drawEveryThing();
+            }
+        }
+
         function Timer() {
             forward();
             drawEveryThing();
