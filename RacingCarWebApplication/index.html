@@ -36,18 +36,15 @@
         var aktuelColor = "black";
 
         function startAll() {
-            hentBillede();
-
-            document.body.addEventListener('keydown', doKeyDown);
-
-     
             
+            document.body.addEventListener('keydown', doKeyDown);           
+            hentBilledeAfBanen();
         }
 
-        function hentBillede() {            
+        function hentBilledeAfBanen() {            
             Bane.src = 'bane.png';
             Bane.onload = function ()
-            {
+            {         
                 myTimer = setInterval(Timer, 20);
                 drawEveryThing();
             }
@@ -255,12 +252,11 @@
             ctx.strokeStyle = aktuelColor;
 
 
-            //Drawing the distance left
+            //Drawing the distance right
             var distRight = rightDistance();
             ctx.beginPath();
             ctx.lineWidth = "1";
             ctx.strokeStyle = "red";
-
             ctx.moveTo(justInFront.x, justInFront.y);
             ctx.lineTo(distRight.x, distRight.y);
             ctx.stroke();
@@ -292,7 +288,8 @@
             ctx.fillText("Distance right = " + Math.ceil(distantRight), xpos, 110);
             ctx.fillText("Time = " + timeCount, xpos, 130);
 
-            //Crash Crash Crash Crash Crash Crash Crash Crash Crash Crash
+            //Collision control - Collision control - Collision control - Collision control
+            //Collision control - Collision control - Collision control - Collision control
             var imgData = ctx.getImageData(center.x, center.y, 10, 10);
             var red = imgData.data[0];
             var green = imgData.data[1];
