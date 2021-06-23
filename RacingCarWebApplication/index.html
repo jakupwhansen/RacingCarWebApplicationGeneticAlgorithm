@@ -25,7 +25,10 @@
     
     <script>
         var myTimer;
-        var speed = 1;
+        var defaultRotatValue = 3;
+        var defaultSpeedIncriment = 0.1;
+        var defaultSpeedStart = 0.3;
+        var speed = defaultSpeedStart;
         var timeCount = 0;
         var center = { x: 130, y: 65 };
         var lineLength = 30;
@@ -45,9 +48,6 @@
             Bane.src = 'bane.png';
             Bane.onload = function ()
             { 
-                //PC 1 har lavet en ændring her
-                //PC 2 har også lavet en ændring efterfølgende.
-                //PC 1 har nu også lavet en ændring mere.
                 myTimer = setInterval(Timer, 20);
                 drawEveryThing();
             }
@@ -62,34 +62,32 @@
             center = { x: 130, y: 65 };
             timeCount = 0;
             angle = 0;
-            speed = 1;
+            speed = defaultSpeedStart;
             clearInterval(myTimer);
             myTimer = setInterval(Timer, 20);
         }
         function SpeedUp() {
-            speed++;
+            speed += defaultSpeedIncriment;
         }
         function SpeedDown() {
-            speed--;
-            if (speed < 1)
-                speed = 1;
+            speed -= defaultSpeedIncriment ;           
         }
         function doKeyDown(e) {
             if (e.keyCode == 87) //W = forward
             {
-                forward();
+                SpeedUp();
             }
             if (e.keyCode == 83) //S = backward
             {
-                backward();
+                SpeedDown();
             }
             if (e.keyCode == 65) //A = left
             {
-                rotateCar(-3);
+                rotateCar(-defaultRotatValue);
             }
             if (e.keyCode == 68) //D = right
             {
-                rotateCar(3);
+                rotateCar(defaultRotatValue);
             }
         }
         function forward() {
