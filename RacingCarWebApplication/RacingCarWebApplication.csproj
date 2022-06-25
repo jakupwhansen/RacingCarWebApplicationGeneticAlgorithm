@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="bane.png" />
     <Content Include="index.html" />
+    <Content Include="RacingCar.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
