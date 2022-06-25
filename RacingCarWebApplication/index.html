@@ -18,9 +18,7 @@
                 </canvas>
             </td>
         </tr>
-    </table>
-    
-
+    </table>  
     <script>
         //-------------------------------------------------------------------
         //    Welcome to Genetic Algorithm with JavaScript.
@@ -44,12 +42,17 @@
 
 
             //--------OUT: Change the car left/right or/and Speed-----------
-            rotateCar(1);     //Postive is Right and Negative is Left.
-            speedChange(-1);  //Positive is Faster and Negative is Slower.
+            rotateCar(getRandomNumber(2, 10));     //Postive is Right and Negative is Left.
+            speedChange(getRandomNumber(2,10));  //Positive is Faster and Negative is Slower.
         }
         function geneticAlgorithmCreateNewPopulation()
         {    
             console.log("New Population created");            
+        }
+
+        function carCrashed()
+        {
+            alert("Car has crashed");
         }
         </Script>
 </body>

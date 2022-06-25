@@ -51,6 +51,12 @@ function newGame() {
     //----------Genetic Algorithm Create New Population her---------------
     geneticAlgorithmCreateNewPopulation();
 }
+function getRandomNumber(decimalPlaces, size) {
+    return ((Math.random() - 0.5) * size).toFixed(decimalPlaces);
+    //getRandomNumber(2,1); giver -0.50 til 0.50
+    //getRandomNumber(2,10); giver -5.00 til 5.00
+    //getRandomNumber(0,100); giver -50 til 50
+}
 function SpeedUp() {
     speed += defaultSpeedIncriment;
 }
@@ -292,6 +298,7 @@ function drawEveryThing() {
     if (green + red + blue < 600) {
         aktuelColor = "red";
         clearInterval(myTimer);
+        carCrashed();
     }
     else {
         aktuelColor = "black";
