@@ -8,7 +8,7 @@
     <table style="width:100%; height:100%;">
         <tr>
             <td style="vertical-align:middle;">
-                <button type="button" onclick="newGame()">New Game</button>
+                <button type="button" onclick="newGame()" id="startNewGameButton">Start New Game</button>
             </td>
         </tr>
         <tr>
@@ -22,16 +22,20 @@
     <script>
         //-------------------------------------------------------------------
         //    Welcome to Genetic Algorithm with JavaScript.
-        // 1. You need to understand the basic of GA, first.
-        // 2. You should be able to get started, by using these functions
-        //    geneticAlgorithmCreateNewPopulation() and geneticAlgorithmDriveCar()
-        //    these functions are allready created and ready to use. The first must
-        //    Create a New Population by using the GA algorithm principle, the second
-        //    function is Driving the car, and Ind and Out is allready placed inside the
-        //    function so that you can get started right away.
+        //
+        //    1. You need to understand the basic of GA, first.
+        //    2. You should be able to get started, by using these two following functions
+        //       allready created.
+        //
+        //    GA_CreateNewPopulation:
+        //    Create a New Population by using the GA algorithm principle,
+        //
+        //    GA_DriveCar:
+        //    Is Driving the car, and Ind and Out is allready placed inside the
+        //    function so that you can get started right away. 
         //------------------------------------------------------------------
  
-        function geneticAlgorithmDriveCar()
+        function GA_DriveCar()
         {
            //--------IN: use these 4 inputs to calculate the output.----
            // speed
@@ -39,20 +43,50 @@
            // distantLeft;
            // distantRight;
 
-
+            var outRotate = population[0].chromosome[0];
+            var outSpeed = population[0].chromosome[1];
 
             //--------OUT: Change the car left/right or/and Speed-----------
-            rotateCar(getRandomNumber(2, 10));     //Postive is Right and Negative is Left.
-            speedChange(getRandomNumber(2,10));  //Positive is Faster and Negative is Slower.
+            //Postive is Right and Negative is Left.
+            rotateCar(outRotate);  
+            //Positive is Faster and Negative is Slower.
+            speedChange(outSpeed);  
         }
-        function geneticAlgorithmCreateNewPopulation()
+        function GA_CreateNewPopulation()
         {    
-            console.log("New Population created");            
+            console.log("New Population created");
+
+            // First time we must create a Random Generation.
+            // So we call this function the first time we run. The second time
+            // you should run the GA algoritm, that you have to create.
+            GA_CreateRandomGeneration(); 
         }
 
+        var population = [];
+        var populationNumber = 10;
+        var numberOfGenesInChromosome = 4;
+        function GA_CreateRandomGeneration()
+        {
+            // This function is just starte. I have added the most important ideas like
+            // an array that holde a population of chromosome. And also I added som chromosom objekt
+            // that holde the chromosom and its fitness.
+            population = [];
+            for (var i = 0; i < populationNumber; i++)
+            {
+                var obj = { chromosome: [], fitness: 0 };
+                for (var j = 0; j < numberOfGenesInChromosome; j++)
+                {                    
+                    obj.chromosome.push(getRandomNumber(2, 10)); //-5 to 5, 2 decimal.
+                }
+                population.push(obj);
+            }
+        }
         function carCrashed()
         {
-            alert("Car has crashed");
+            ctx.fillText("Car has crashed", 10, 20);
+            ctx.fillText("Rotate = " + population[0].chromosome[0], 10, 40);
+            ctx.fillText("Speed = "  + population[0].chromosome[1], 10, 60);
+            console.log(population);
         }
         </Script>
 </body>

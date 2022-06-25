@@ -16,18 +16,19 @@ var distantFront;
 var distantLeft;
 var distantRight;
 
-function startAll() {
-
+function startAll()
+{
     document.body.addEventListener('keydown', doKeyDown);
     hentBilledeAfBanen();
     c = document.getElementById("myCanvas");
-    ctx = c.getContext("2d");
+    ctx = c.getContext("2d");    
 }
 
 function hentBilledeAfBanen() {
     Bane.src = 'bane.png';
-    Bane.onload = function () {
-        myTimer = setInterval(Timer, 20);
+    Bane.onload = function ()
+    {
+       // myTimer = setInterval(Timer, 20);
         drawEveryThing();
     }
 }
@@ -38,9 +39,10 @@ function Timer() {
     timeCount++;
 
     //----------Genetic Algorithm is Driving the car har--------------
-    geneticAlgorithmDriveCar();
+    GA_DriveCar();
 }
 function newGame() {
+    document.getElementById('startNewGameButton').style.visibility = 'hidden';    
     center = { x: 130, y: 65 };
     timeCount = 0;
     angle = 0;
@@ -49,7 +51,7 @@ function newGame() {
     myTimer = setInterval(Timer, 20);
 
     //----------Genetic Algorithm Create New Population her---------------
-    geneticAlgorithmCreateNewPopulation();
+    GA_CreateNewPopulation();
 }
 function getRandomNumber(decimalPlaces, size) {
     return ((Math.random() - 0.5) * size).toFixed(decimalPlaces);
@@ -299,8 +301,10 @@ function drawEveryThing() {
         aktuelColor = "red";
         clearInterval(myTimer);
         carCrashed();
+        document.getElementById('startNewGameButton').style.visibility = 'visible';
     }
-    else {
+    else
+    {
         aktuelColor = "black";
     }
 }
