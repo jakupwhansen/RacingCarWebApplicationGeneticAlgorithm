@@ -19,14 +19,23 @@
             </td>
         </tr>
     </table>
-
+    
 
     <script>
+        //-------------------------------------------------------------------
+        //    Welcome to Genetic Algorithm with JavaScript.
+        // 1. You need to understand the basic of GA, first.
+        // 2. You should be able to get started, by using these functions
+        //    geneticAlgorithmCreateNewPopulation() and geneticAlgorithmDriveCar()
+        //    these functions are allready created and ready to use. The first must
+        //    Create a New Population by using the GA algorithm principle, the second
+        //    function is Driving the car, and Ind and Out is allready placed inside the
+        //    function so that you can get started right away.
+        //------------------------------------------------------------------
         var myTimer;
         var defaultRotatValue = 3;
         var defaultSpeedIncriment = 0.1;
-        var defaultSpeedStart = 0.3;
-        var speed = defaultSpeedStart;
+        var defaultSpeedStart = 0.3;        
         var timeCount = 0;
         var center = { x: 130, y: 65 };
         var lineLength = 30;
@@ -35,6 +44,11 @@
         var ctx = c.getContext("2d");
         var Bane = new Image();
         var aktuelColor = "black";
+        //----------------------------------------
+        var speed = defaultSpeedStart;
+        var distantFront;
+        var distantLeft;
+        var distantRight;
 
         function startAll() {
 
@@ -54,6 +68,9 @@
             forward();
             drawEveryThing();
             timeCount++;
+
+            //----------Genetic Algorithm is Driving the car har--------------
+            geneticAlgorithmDriveCar();
         }
         function newGame() {
             center = { x: 130, y: 65 };
@@ -62,6 +79,29 @@
             speed = defaultSpeedStart;
             clearInterval(myTimer);
             myTimer = setInterval(Timer, 20);
+
+            //----------Genetic Algorithm Create New Population her---------------
+            geneticAlgorithmCreateNewPopulation();
+        }
+        function geneticAlgorithmDriveCar()
+        {
+           //--------IN: use these 4 inputs to calculate the output.----
+           // speed
+           // distantFront;
+           // distantLeft;
+           // distantRight;
+
+
+
+            //--------OUT: Change the car left/right or/and Speed-----------
+            rotateCar(2);
+            speedChange(2);
+        }
+        function geneticAlgorithmCreateNewPopulation()
+        {    
+
+
+            console.log("New Population created");            
         }
         function SpeedUp() {
             speed += defaultSpeedIncriment;
@@ -279,9 +319,9 @@
             ctx.fillText("Left='a' Right='d' Fast='w' Slow='s'", xpos - 40, 20);
             ctx.fillText("", xpos, 40);
 
-            var distantFront = dist(distFarward.x, distFarward.y, justInFront.x, justInFront.y);
-            var distantLeft = dist(distLeft.x, distLeft.y, justInFront.x, justInFront.y);
-            var distantRight = dist(distRight.x, distRight.y, justInFront.x, justInFront.y);
+            distantFront = dist(distFarward.x, distFarward.y, justInFront.x, justInFront.y);
+            distantLeft = dist(distLeft.x, distLeft.y, justInFront.x, justInFront.y);
+            distantRight = dist(distRight.x, distRight.y, justInFront.x, justInFront.y);
 
             ctx.fillText("Distance front = " + Math.ceil(distantFront), xpos, ypos + 20);
             ctx.fillText("Distance left = " + Math.ceil(distantLeft), xpos, ypos + 40);
