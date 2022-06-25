@@ -288,7 +288,7 @@ function drawEveryThing() {
     ctx.fillText("Distance left = " + Math.ceil(distantLeft), xpos, ypos + 40);
     ctx.fillText("Distance right = " + Math.ceil(distantRight), xpos, ypos + 60);
     ctx.fillText("Time = " + timeCount, xpos, ypos + 80);
-    ctx.fillText("Speed = " + Math.round(speed * 10), xpos, ypos + 100);
+    ctx.fillText("Speed = " + speed.toFixed(2), xpos, ypos + 100);
 
     //Collision control - Collision control - Collision control - Collision control
     //Collision control - Collision control - Collision control - Collision control
