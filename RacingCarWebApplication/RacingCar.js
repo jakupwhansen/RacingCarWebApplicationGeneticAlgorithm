@@ -3,7 +3,7 @@ var defaultRotatValue = 30;
 var defaultSpeedIncriment = 0.1;
 var defaultSpeedStart = 0.3;
 var timeCount = 0;
-var center = { x: 130, y: 65 };
+var car = { x: 130, y: 65 };
 var lineLength = 30;
 var angle = 0;
 var c ;
@@ -43,7 +43,7 @@ function Timer() {
 }
 function newGame() {
     document.getElementById('startNewGameButton').style.visibility = 'hidden';    
-    center = { x: 130, y: 65 };
+    car = { x: 130, y: 65 };
     timeCount = 0;
     angle = 0;
     speed = defaultSpeedStart;
@@ -84,14 +84,14 @@ function doKeyDown(e) {
     }
 }
 function forward() {
-    var nyPos = lineToAngle(ctx, center.x, center.y, speed, angle);
-    center.x = nyPos.x;
-    center.y = nyPos.y;
+    var nyPos = lineToAngle(ctx, car.x, car.y, speed, angle);
+    car.x = nyPos.x;
+    car.y = nyPos.y;
 }
 function backward() {
-    var nyPos = lineToAngle(ctx, center.x, center.y, -1, angle);
-    center.x = nyPos.x;
-    center.y = nyPos.y;
+    var nyPos = lineToAngle(ctx, car.x, car.y, -1, angle);
+    car.x = nyPos.x;
+    car.y = nyPos.y;
 }
 //Genetic Algorithm output function
 function rotateCar(leftRigth) {
@@ -120,8 +120,8 @@ function justInfrontfarwardDistance() {
     var x2, y2;
 
     var curentAngel = (Math.PI / 180) * angle;
-    x2 = center.x + length * Math.cos(curentAngel);
-    y2 = center.y + length * Math.sin(curentAngel);
+    x2 = car.x + length * Math.cos(curentAngel);
+    y2 = car.y + length * Math.sin(curentAngel);
 
     return { x: x2, y: y2 };
 }
@@ -133,8 +133,8 @@ function farwardDistance() {
 
         var curentAngel = (Math.PI / 180) * angle;
 
-        x2 = center.x + length * Math.cos(curentAngel);
-        y2 = center.y + length * Math.sin(curentAngel);
+        x2 = car.x + length * Math.cos(curentAngel);
+        y2 = car.y + length * Math.sin(curentAngel);
 
         var imgData = ctx.getImageData(x2, y2, 10, 10);
         var red = imgData.data[0];
@@ -157,8 +157,8 @@ function leftDistance() {
 
         var curentAngel = (Math.PI / 180) * angle - 70;
 
-        x2 = center.x + length * Math.cos(curentAngel);
-        y2 = center.y + length * Math.sin(curentAngel);
+        x2 = car.x + length * Math.cos(curentAngel);
+        y2 = car.y + length * Math.sin(curentAngel);
 
         var imgData = ctx.getImageData(x2, y2, 10, 10);
         var red = imgData.data[0];
@@ -180,8 +180,8 @@ function rightDistance() {
 
         var curentAngel = (Math.PI / 180) * angle + 70;
 
-        x2 = center.x + length * Math.cos(curentAngel);
-        y2 = center.y + length * Math.sin(curentAngel);
+        x2 = car.x + length * Math.cos(curentAngel);
+        y2 = car.y + length * Math.sin(curentAngel);
 
         var imgData = ctx.getImageData(x2, y2, 10, 10);
         var red = imgData.data[0];
@@ -217,17 +217,17 @@ function drawEveryThing() {
     var angle1 = angle + 240;
     if (angle1 > 360)
         angle1 = angle - 120;
-    var newPos1 = lineToAngle(ctx, center.x, center.y, lineLength - 15, angle1);
+    var newPos1 = lineToAngle(ctx, car.x, car.y, lineLength - 15, angle1);
 
     //Calculating the second Corner
     var angle2 = angle;
-    var newPos2 = lineToAngle(ctx, center.x, center.y, lineLength - 10, angle2);
+    var newPos2 = lineToAngle(ctx, car.x, car.y, lineLength - 10, angle2);
 
     //Calculating the third Corner
     var angle3 = angle + 120;
     if (angle3 > 360)
         angle3 = angle - 240;
-    var newPos3 = lineToAngle(ctx, center.x, center.y, lineLength - 15, angle3);
+    var newPos3 = lineToAngle(ctx, car.x, car.y, lineLength - 15, angle3);
 
     //Drawing the distance front
     var distFarward = farwardDistance();
@@ -283,7 +283,7 @@ function drawEveryThing() {
     distantFront = dist(distFarward.x, distFarward.y, justInFront.x, justInFront.y);
     distantLeft = dist(distLeft.x, distLeft.y, justInFront.x, justInFront.y);
     distantRight = dist(distRight.x, distRight.y, justInFront.x, justInFront.y);
-
+    ctx.fillText("Car x = " + car.x.toFixed(0) + " Car y = " + car.x.toFixed(0), xpos, ypos );
     ctx.fillText("Distance front = " + Math.ceil(distantFront), xpos, ypos + 20);
     ctx.fillText("Distance left = " + Math.ceil(distantLeft), xpos, ypos + 40);
     ctx.fillText("Distance right = " + Math.ceil(distantRight), xpos, ypos + 60);
@@ -292,7 +292,7 @@ function drawEveryThing() {
 
     //Collision control - Collision control - Collision control - Collision control
     //Collision control - Collision control - Collision control - Collision control
-    var imgData = ctx.getImageData(center.x, center.y, 10, 10);
+    var imgData = ctx.getImageData(car.x, car.y, 10, 10);
     var red = imgData.data[0];
     var green = imgData.data[1];
     var blue = imgData.data[2];

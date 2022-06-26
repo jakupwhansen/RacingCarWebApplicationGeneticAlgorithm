@@ -37,16 +37,23 @@
  
         function GA_DriveCar()
         {
-           //--------IN: use these 4 inputs to calculate the output.----
+           //--------IN: use these 4 inputs to calculate the output.---------------------
            // speed
            // distantFront;
            // distantLeft;
            // distantRight;
 
+           //--------Fitness. You can use the car position to calculate the fitness.------
+           // car.x & car.y
+
+
+            //-----Just a simple/dumb way to calculate the two output, used for stearing the car-----------------------------
             var outRotate = population[0].chromosome[0];
             var outSpeed = population[0].chromosome[1];
 
-            //--------OUT: Change the car left/right or/and Speed-----------
+
+
+            //--------OUT: Change the car left/right or/and Speed--------------------------
             //Postive is Right and Negative is Left.
             rotateCar(outRotate);  
             //Positive is Faster and Negative is Slower.
@@ -61,13 +68,12 @@
             // you should run the GA algoritm, that you have to create.
             GA_CreateRandomGeneration(); 
         }
-
         var population = [];
-        var populationNumber = 10;
+        var populationNumber = 6;
         var numberOfGenesInChromosome = 4;
         function GA_CreateRandomGeneration()
         {
-            // This function is just starte. I have added the most important ideas like
+            // This function is just started. I have added the most important ideas like
             // an array that holde a population of chromosome. And also I added som chromosom objekt
             // that holde the chromosom and its fitness.
             population = [];
