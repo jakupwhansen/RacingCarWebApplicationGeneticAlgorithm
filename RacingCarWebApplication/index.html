@@ -34,7 +34,7 @@
         //    Is Driving the car, and Ind and Out is allready placed inside the
         //    function so that you can get started right away. 
         //------------------------------------------------------------------
- 
+        
         function GA_DriveCar()
         {
            //--------IN: use these 4 inputs to calculate the output.---------------------
@@ -45,32 +45,91 @@
 
            //--------Fitness. You can use the car position to calculate the fitness.------
            // car.x & car.y
-
-
-            //-----Just a simple/dumb way to calculate the two output, used for stearing the car-----------------------------
-            var outRotate = population[0].chromosome[0];
-            var outSpeed = population[0].chromosome[1];
-
-
+         
+            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3]);
+            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7]);
 
             //--------OUT: Change the car left/right or/and Speed--------------------------
             //Postive is Right and Negative is Left.
             rotateCar(outRotate);  
             //Positive is Faster and Negative is Slower.
             speedChange(outSpeed);  
+            //Check for collision, for finding fitness.
+            collisionCheckPointsListe();
         }
+        var activePopulation = -1;
+        var firstTimeRunning = true;
+
         function GA_CreateNewPopulation()
         {    
-            console.log("New Population created");
+            if (activePopulation === -1) {
 
-            // First time we must create a Random Generation.
-            // So we call this function the first time we run. The second time
-            // you should run the GA algoritm, that you have to create.
-            GA_CreateRandomGeneration(); 
+                if (firstTimeRunning)
+                {
+                    console.log("New Population created");
+                    GA_CreateRandomGeneration();
+                    firstTimeRunning = false;
+                }
+                else
+                {
+                    console.log("Better Population created");
+                    GA_CreateBetterGeneration();
+                }
+           
+                activePopulation = 0; //Ready to go
+                // CreateNewPoint list for fitness
+                pointsPunkterCreate();
+            }
+            else {
+                activePopulation++;
+                console.log("Next population is " + activePopulation);
+                // CreateNewPoint list for fitness
+                pointsPunkterCreate();
+                if (activePopulation > populationNumber-1) {
+                    activePopulation = -1; //start again.
+                    GA_CreateNewPopulation();
+                    
+                }
+            }
+             
+        }
+        function GA_CreateBetterGeneration() {
+            population.sort(function (a, b) { return b.fitness - a.fitness });
+            //------------------calculate fitness SUM------------------
+            var fitnessSum = 0
+            population.forEach((element) =>
+            {                
+                fitnessSum = fitnessSum + element.fitness;
+            });
+            
+            //-------------Set fitness in Percent to individual Chromosome----------
+            population.forEach((element) => {
+                element.fitnessInProcent = 100 / fitnessSum * element.fitness;
+            });
+            //---------Select a pair of chromosomes for mating, and save to new list-----------            
+            newChromosomeList = [];
+            for (var i = 0; i < population.length; i++)
+            {
+                var rand = parseInt(getRandomNumber(0, 100)) + 50;
+                var persentSum = 0;
+                for (var j = 0; j < population.length; j++)
+                {
+                    persentSum += population[j].fitnessInProcent;                    
+                    if (rand < persentSum) {
+                        newChromosomeList.push(population[j]);
+                        break;
+                    }
+                }                
+            }
+            population = newChromosomeList;
+            
+          
+
+
         }
         var population = [];
         var populationNumber = 6;
-        var numberOfGenesInChromosome = 4;
+        var numberOfGenesInChromosome = 8;
         function GA_CreateRandomGeneration()
         {
             // This function is just started. I have added the most important ideas like
@@ -79,10 +138,10 @@
             population = [];
             for (var i = 0; i < populationNumber; i++)
             {
-                var obj = { chromosome: [], fitness: 0 };
+                var obj = { chromosome: [], fitness: 0 , fitnessInProcent:0};
                 for (var j = 0; j < numberOfGenesInChromosome; j++)
                 {                    
-                    obj.chromosome.push(getRandomNumber(2, 10)); //-5 to 5, 2 decimal.
+                    obj.chromosome.push(getRandomNumber(2, 1)); //-5 to 5, 2 decimal.
                 }
                 population.push(obj);
             }
@@ -90,10 +149,53 @@
         function carCrashed()
         {
             ctx.fillText("Car has crashed", 10, 20);
-            ctx.fillText("Rotation change = " + population[0].chromosome[0], 10, 40);
-            ctx.fillText("Speed change = "  + population[0].chromosome[1], 10, 60);
-            console.log(population);
+            //calulate fitness
+            var fitness = (pointsInListe - pointsListe.length) / timeCount;
+            ctx.fillText("Fitness = " + fitness, 10, 40);
+            // Setting fitness for current population
+            population[activePopulation].fitness = fitness;
+
+            console.log(population);            
         }
+
+        function Collision(a, b, width, height) //JavaScript Collision functionen.
+        {
+            var svar = false;
+            if (a.X - b.x > 0 && a.X - b.x < width || b.x - a.X < width && b.x - a.X > 0) {
+                if (a.Y - b.y > 0 && a.Y - b.y < height || b.y - a.Y < height && b.y - a.Y > 0) {
+                    svar = true;
+                }
+            }
+            return svar; //SVARER TRUE eller FALSE.
+        }
+        function collisionCheckPointsListe() {
+            for (var i = 0; i < pointsListe.length; i++) {
+                if (Collision(pointsListe[i], car, 60, 60)) {
+                    //Sletter fra listen.
+                    pointsListe.splice(i, 1);
+                }
+            }
+        }
+        var pointsListe = [];
+        var pointsInListe = 12;
+        
+        function pointsPunkterCreate() {
+            pointsListe = [];
+            pointsListe.push({ X: 208, Y: 86 });
+            pointsListe.push({ X: 310, Y: 197 });
+            pointsListe.push({ X: 420, Y: 262 });
+            pointsListe.push({ X: 529, Y: 170 });
+            pointsListe.push({ X: 626, Y: 52 });
+            pointsListe.push({ X: 735, Y: 112 });
+            pointsListe.push({ X: 706, Y: 284 });
+            pointsListe.push({ X: 542, Y: 352 });
+            pointsListe.push({ X: 390, Y: 353 });
+            pointsListe.push({ X: 252, Y: 347 });
+            pointsListe.push({ X: 135, Y: 299 });
+            pointsListe.push({ X: 88, Y: 169 });
+
+        }
+
         </Script>
 </body>
 </html>
