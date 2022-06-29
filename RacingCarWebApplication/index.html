@@ -39,11 +39,12 @@
         var numberOfGenesInChromosome = 10;
         var activePopulation = -1;
         var firstTimeRunning = true;
-        var maxTimePrGame = 1000;
+        var maxTimePrGame = 2000;
         function GA_DriveCar()
         {
             if (timeCount > maxTimePrGame)
             {
+                //we can stop the game, by moving the car out of the lane.
                 car.x = 0;
                 car.y = 0;
             }
@@ -52,8 +53,8 @@
            // distantFront;
            // distantLeft;
            // distantRight;
-           //Speed
-            speed
+           // Speed
+           
            //--------Fitness. You can use the car position to calculate the fitness.------
            // car.x & car.y
          
@@ -93,12 +94,14 @@
                 // CreateNewPoint list for fitness
                 pointsPunkterCreate();
             }
-            else {
+            else
+            {
                 activePopulation++;
                 console.log("Next population is " + activePopulation);
                 // CreateNewPoint list for fitness
                 pointsPunkterCreate();
-                if (activePopulation > populationNumber-1) {
+                if (activePopulation > populationNumber - 1)
+                {
                     activePopulation = -1; //start again.
                     GA_CreateNewPopulation();
                     
@@ -210,13 +213,14 @@
         var minFitnessExeptable = 2;
         function calculateFitnessForCar()
         {
-            //calulate fitness, MaxTimePrGame = 1000,
+            //calulate fitness, MaxTimePrGame = 2000,
             //var fitness = (pointsInListe - pointsListe.length) + ((maxTimePrGame - timeCount) / 100);
             var fitness = numberOfPointsHit;
 
             if (fitness > minFitnessExeptable)
             {
                 ctx.fillText("Fitness = " + fitness, 10, 40);
+                console.log("Fitness = " + fitness);
                 // Setting fitness for current population
                 population[activePopulation].fitness = fitness;
             }
