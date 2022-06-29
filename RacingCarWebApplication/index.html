@@ -34,20 +34,31 @@
         //    Is Driving the car, and Ind and Out is allready placed inside the
         //    function so that you can get started right away. 
         //------------------------------------------------------------------
-        
+        var population = [];
+        var populationNumber = 30;
+        var numberOfGenesInChromosome = 10;
+        var activePopulation = -1;
+        var firstTimeRunning = true;
+        var maxTimePrGame = 1000;
         function GA_DriveCar()
         {
+            if (timeCount > maxTimePrGame)
+            {
+                car.x = 0;
+                car.y = 0;
+            }
            //--------IN: use these 4 inputs to calculate the output.---------------------
            // speed
            // distantFront;
            // distantLeft;
            // distantRight;
-
+           //Speed
+            speed
            //--------Fitness. You can use the car position to calculate the fitness.------
            // car.x & car.y
          
-            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3]);
-            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7]);
+            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3] + (speed * population[activePopulation].chromosome[8]));
+            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7] + (speed * population[activePopulation].chromosome[9]));
 
             //--------OUT: Change the car left/right or/and Speed--------------------------
             //Postive is Right and Negative is Left.
@@ -57,12 +68,14 @@
             //Check for collision, for finding fitness.
             collisionCheckPointsListe();
         }
-        var activePopulation = -1;
-        var firstTimeRunning = true;
+      
 
         function GA_CreateNewPopulation()
         {    
-            if (activePopulation === -1) {
+            numberOfPointsHit = 0;
+
+            if (activePopulation === -1) 
+            {
 
                 if (firstTimeRunning)
                 {
@@ -94,19 +107,20 @@
              
         }
         function GA_CreateBetterGeneration() {
+            //----------------Sortin all the Chromosome-------------------------------------------
             population.sort(function (a, b) { return b.fitness - a.fitness });
-            //------------------calculate fitness SUM------------------
+            //------------------calculate fitness SUM---------------------------------------------
             var fitnessSum = 0
             population.forEach((element) =>
             {                
                 fitnessSum = fitnessSum + element.fitness;
             });
             
-            //-------------Set fitness in Percent to individual Chromosome----------
+            //-------------Set fitness in Percent to individual Chromosome------------------------
             population.forEach((element) => {
                 element.fitnessInProcent = 100 / fitnessSum * element.fitness;
             });
-            //---------Select a pair of chromosomes for mating, and save to new list-----------            
+            //---------Select a pair of chromosomes for mating, and save to new list--------------           
             newChromosomeList = [];
             for (var i = 0; i < population.length; i++)
             {
@@ -122,14 +136,55 @@
                 }                
             }
             population = newChromosomeList;
-            
-          
+            //--------Crossover operation----------------------------------------------------------
+            newChromosomeList = [];
+            for (var i = 0; i < population.length; i = i + 2)
+            {
+                var crossOverPoint = parseInt(getRandomNumber(0, numberOfGenesInChromosome)) + numberOfGenesInChromosome/2;
+                var firstChromosom = population[i];
+                var secondChromosom = population[i + 1];
+                var obj1 = { chromosome: [], fitness: 0, fitnessInProcent: 0 };
+                var obj2 = { chromosome: [], fitness: 0, fitnessInProcent: 0 };
+                for (var j = 0; j < numberOfGenesInChromosome; j++)
+                {
+                    if (j >= crossOverPoint) //CrossOver found
+                    {
+                        obj1.chromosome.push(secondChromosom.chromosome[j]);
+                        obj2.chromosome.push(firstChromosom.chromosome[j]);
+                    }
+                    else
+                    {
+                        obj1.chromosome.push(firstChromosom.chromosome[j]);
+                        obj2.chromosome.push(secondChromosom.chromosome[j]);
+                    }
+                }
 
+                newChromosomeList.push(obj1);
+                newChromosomeList.push(obj2);  
+
+                console.log("Crossover Point = " + crossOverPoint);
+                console.log("Parent 1 " + firstChromosom.chromosome);
+                console.log("Parent 2 " + secondChromosom.chromosome);
+                console.log("child 1 " + obj1.chromosome);
+                console.log("child 2 " + obj2.chromosome);
+                //--------Mutation operation----------------------------------------------------------
+
+            }
+            population = newChromosomeList;
+            for (var i = 0; i < population.length; i++)
+            {
+                var selectOrNot = parseInt(getRandomNumber(0, 100) + 50);  
+                if (selectOrNot > 70) //70 % is good
+                {
+                    var MutatePosition = parseInt(getRandomNumber(0, numberOfGenesInChromosome)) + numberOfGenesInChromosome / 2;
+                    population[i].chromosome[MutatePosition] = getRandomNumber(2, 1);
+                    console.log("Mutated at position = " + MutatePosition);
+                    console.log("The new chromosom " + population[i].chromosome);
+                }
+            }
 
         }
-        var population = [];
-        var populationNumber = 6;
-        var numberOfGenesInChromosome = 8;
+      
         function GA_CreateRandomGeneration()
         {
             // This function is just started. I have added the most important ideas like
@@ -149,13 +204,28 @@
         function carCrashed()
         {
             ctx.fillText("Car has crashed", 10, 20);
-            //calulate fitness
-            var fitness = (pointsInListe - pointsListe.length) / timeCount;
-            ctx.fillText("Fitness = " + fitness, 10, 40);
-            // Setting fitness for current population
-            population[activePopulation].fitness = fitness;
+            calculateFitnessForCar();
+            setTimeout(newGame, 1000); 
+        }
+        var minFitnessExeptable = 2;
+        function calculateFitnessForCar()
+        {
+            //calulate fitness, MaxTimePrGame = 1000,
+            //var fitness = (pointsInListe - pointsListe.length) + ((maxTimePrGame - timeCount) / 100);
+            var fitness = numberOfPointsHit;
 
-            console.log(population);            
+            if (fitness > minFitnessExeptable)
+            {
+                ctx.fillText("Fitness = " + fitness, 10, 40);
+                // Setting fitness for current population
+                population[activePopulation].fitness = fitness;
+            }
+            else
+            {
+                ctx.fillText("Fitness = To Small " + fitness , 10, 40);                
+            }         
+
+           // console.log(population);
         }
 
         function Collision(a, b, width, height) //JavaScript Collision functionen.
@@ -170,12 +240,20 @@
         }
         function collisionCheckPointsListe() {
             for (var i = 0; i < pointsListe.length; i++) {
-                if (Collision(pointsListe[i], car, 60, 60)) {
+                if (Collision(pointsListe[i], car, 60, 60)) 
+                {
                     //Sletter fra listen.
                     pointsListe.splice(i, 1);
+                    numberOfPointsHit++;
                 }
             }
+            if (pointsListe.length === 0)
+            {
+                //Create a new list for this car, it has driven the whole lane atleast once.
+                pointsPunkterCreate();
+            }
         }
+        var numberOfPointsHit = 0;
         var pointsListe = [];
         var pointsInListe = 12;
         
