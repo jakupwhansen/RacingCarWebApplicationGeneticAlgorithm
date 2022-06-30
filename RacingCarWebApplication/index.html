@@ -36,7 +36,7 @@
         //------------------------------------------------------------------
         var population = [];
         var populationNumber = 30;
-        var numberOfGenesInChromosome = 10;
+        var numberOfGenesInChromosome = 8;
         var activePopulation = -1;
         var firstTimeRunning = true;
         var maxTimePrGame = 2000;
@@ -58,8 +58,8 @@
            //--------Fitness. You can use the car position to calculate the fitness.------
            // car.x & car.y
          
-            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3] + (speed * population[activePopulation].chromosome[8]));
-            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7] + (speed * population[activePopulation].chromosome[9]));
+            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3] );
+            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7] );
 
             //--------OUT: Change the car left/right or/and Speed--------------------------
             //Postive is Right and Negative is Left.
@@ -109,9 +109,14 @@
             }
              
         }
-        function GA_CreateBetterGeneration() {
+        function GA_CreateBetterGeneration()
+        {
             //----------------Sortin all the Chromosome-------------------------------------------
             population.sort(function (a, b) { return b.fitness - a.fitness });
+            //---------Print out for debugging-----------------------
+
+            console.log(population);
+
             //------------------calculate fitness SUM---------------------------------------------
             var fitnessSum = 0
             population.forEach((element) =>
