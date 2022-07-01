@@ -16,6 +16,8 @@
                 <canvas id="myCanvas" width="800" height="400" style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
+                <input type="text" id="bestCromosom" style="width: 800px;"><br><br>
+                <button onclick="insertJsonChromosomeIntoSystem()" id="testButton">Insert Chromosome</button>
             </td>
         </tr>
     </table>  
@@ -40,8 +42,13 @@
         var activePopulation = -1;
         var firstTimeRunning = true;
         var maxTimePrGame = 2000;
+        var numberOfPointsHit = 0;
+        var pointsListe = [];
+        var pointsInListe = 12;  
+        var heighestFittnesSofare = 0;
         function GA_DriveCar()
         {
+            drawFitnessPoints();
             if (timeCount > maxTimePrGame)
             {
                 //we can stop the game, by moving the car out of the lane.
@@ -70,7 +77,6 @@
             collisionCheckPointsListe();
         }
       
-
         function GA_CreateNewPopulation()
         {    
             numberOfPointsHit = 0;
@@ -106,8 +112,7 @@
                     GA_CreateNewPopulation();
                     
                 }
-            }
-             
+            }             
         }
         function GA_CreateBetterGeneration()
         {
@@ -132,7 +137,9 @@
             newChromosomeList = [];
             for (var i = 0; i < population.length; i++)
             {
-                var rand = parseInt(getRandomNumber(0, 100)) + 50;
+                var rand = parseInt(getRandomNumber(0, 100)) + 50; 
+                if (rand > 95) //just for safty
+                    rand = 95;
                 var persentSum = 0;
                 for (var j = 0; j < population.length; j++)
                 {
@@ -155,15 +162,28 @@
                 var obj2 = { chromosome: [], fitness: 0, fitnessInProcent: 0 };
                 for (var j = 0; j < numberOfGenesInChromosome; j++)
                 {
-                    if (j >= crossOverPoint) //CrossOver found
+                    try
                     {
-                        obj1.chromosome.push(secondChromosom.chromosome[j]);
-                        obj2.chromosome.push(firstChromosom.chromosome[j]);
+
+                        if (j >= crossOverPoint) //CrossOver found
+                        {
+                            obj1.chromosome.push(secondChromosom.chromosome[j]);
+                            obj2.chromosome.push(firstChromosom.chromosome[j]);
+                        }
+                        else
+                        {
+                            obj1.chromosome.push(firstChromosom.chromosome[j]);
+                            obj2.chromosome.push(secondChromosom.chromosome[j]);
+                        }
+
                     }
-                    else
+                    catch (err)
                     {
-                        obj1.chromosome.push(firstChromosom.chromosome[j]);
-                        obj2.chromosome.push(secondChromosom.chromosome[j]);
+
+                        console.log(err.message);
+                        console.log(firstChromosom);
+                        console.log(secondChromosom);
+                        console.log(crossOverPoint);
                     }
                 }
 
@@ -215,6 +235,16 @@
             calculateFitnessForCar();
             setTimeout(newGame, 1000); 
         }
+        function showMostFittedInTextbox(jsonForTextbox)
+        {            
+            document.getElementById("bestCromosom").value = jsonForTextbox;
+        }
+        function insertJsonChromosomeIntoSystem()
+        {
+            var jsonString = document.getElementById("bestCromosom").value;
+            population[0] = JSON.parse(jsonString);
+            activePopulation = 0;
+        }
         var minFitnessExeptable = 2;
         function calculateFitnessForCar()
         {
@@ -228,6 +258,11 @@
                 console.log("Fitness = " + fitness);
                 // Setting fitness for current population
                 population[activePopulation].fitness = fitness;
+                if (fitness > heighestFittnesSofare)
+                {
+                    heighestFittnesSofare = fitness;
+                    showMostFittedInTextbox(JSON.stringify(population[activePopulation]));
+                }
             }
             else
             {
@@ -247,25 +282,21 @@
             }
             return svar; //SVARER TRUE eller FALSE.
         }
-        function collisionCheckPointsListe() {
-            for (var i = 0; i < pointsListe.length; i++) {
-                if (Collision(pointsListe[i], car, 60, 60)) 
-                {
-                    //Sletter fra listen.
-                    pointsListe.splice(i, 1);
-                    numberOfPointsHit++;
-                }
+        function collisionCheckPointsListe() 
+        {
+            if (Collision(pointsListe[0], car, 60, 60)) 
+            {
+                //Sletter fra listen.
+                pointsListe.splice(0, 1);
+                numberOfPointsHit++;
             }
+
             if (pointsListe.length === 0)
             {
                 //Create a new list for this car, it has driven the whole lane atleast once.
                 pointsPunkterCreate();
             }
-        }
-        var numberOfPointsHit = 0;
-        var pointsListe = [];
-        var pointsInListe = 12;
-        
+        }     
         function pointsPunkterCreate() {
             pointsListe = [];
             pointsListe.push({ X: 208, Y: 86 });
@@ -280,6 +311,22 @@
             pointsListe.push({ X: 252, Y: 347 });
             pointsListe.push({ X: 135, Y: 299 });
             pointsListe.push({ X: 88, Y: 169 });
+
+        }
+        function drawFitnessPoints()
+        {
+            const radius = 70;
+
+            pointsListe.forEach((element) =>
+            {
+                ctx.beginPath();
+                ctx.arc(element.X, element.Y, 30, radius, 0, 2 * Math.PI, false);
+                ctx.lineWidth = 0;
+                ctx.strokeStyle = '#EEEDE7';
+                ctx.stroke();
+            });
+            ctx.fillStyle = 'black';
+            ctx.strokeStyle = 'black';
 
         }
 
