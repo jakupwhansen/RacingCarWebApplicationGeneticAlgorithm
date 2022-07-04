@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="bane.png" />
+    <Content Include="GA network with JS code.png" />
     <Content Include="index.html" />
     <Content Include="RacingCar.js" />
     <Content Include="Web.config" />
@@ -77,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\dataprog.dk - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\dataprog.dk - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

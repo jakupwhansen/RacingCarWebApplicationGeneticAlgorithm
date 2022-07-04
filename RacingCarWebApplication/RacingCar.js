@@ -284,11 +284,12 @@ function drawEveryThing() {
     distantLeft = dist(distLeft.x, distLeft.y, justInFront.x, justInFront.y);
     distantRight = dist(distRight.x, distRight.y, justInFront.x, justInFront.y);
     ctx.fillText("Car x = " + car.x.toFixed(0) + " Car y = " + car.y.toFixed(0), xpos, ypos );
+    ctx.fillText("Speed = " + speed.toFixed(2), xpos, ypos + 100);
     ctx.fillText("Distance front = " + Math.ceil(distantFront), xpos, ypos + 20);
     ctx.fillText("Distance left = " + Math.ceil(distantLeft), xpos, ypos + 40);
     ctx.fillText("Distance right = " + Math.ceil(distantRight), xpos, ypos + 60);
     ctx.fillText("Time = " + timeCount, xpos, ypos + 80);
-    ctx.fillText("Speed = " + speed.toFixed(2), xpos, ypos + 100);
+    
 
     //Collision control - Collision control - Collision control - Collision control
     //Collision control - Collision control - Collision control - Collision control

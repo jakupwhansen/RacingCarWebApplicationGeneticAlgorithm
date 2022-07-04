@@ -16,8 +16,11 @@
                 <canvas id="myCanvas" width="800" height="400" style="border:1px solid #d3d3d3;">
                     Your browser does not support the HTML5 canvas tag.
                 </canvas>
-                <input type="text" id="bestCromosom" style="width: 800px;"><br><br>
+                <br />
+                <input type="text" id="bestCromosom" style="width: 800px;"><br />
                 <button onclick="insertJsonChromosomeIntoSystem()" id="testButton">Insert Chromosome</button>
+                <br />
+                <img src="GA network with JS code.png" width="800"/>
             </td>
         </tr>
     </table>  
@@ -41,7 +44,7 @@
         var numberOfGenesInChromosome = 8;
         var activePopulation = -1;
         var firstTimeRunning = true;
-        var maxTimePrGame = 2000;
+        var maxTimePrGame = 3000;
         var numberOfPointsHit = 0;
         var pointsListe = [];
         var pointsInListe = 12;  
@@ -62,19 +65,37 @@
            // distantRight;
            // Speed
            
-           //--------Fitness. You can use the car position to calculate the fitness.------
-           // car.x & car.y
+           //--------The Genetic Algorithm Network----------------------------------------
          
-            var outRotate = (speed * population[activePopulation].chromosome[0]) + (distantFront * population[activePopulation].chromosome[1]) + (distantLeft * population[activePopulation].chromosome[2]) + (distantRight * population[activePopulation].chromosome[3] );
-            var outSpeed = (speed * population[activePopulation].chromosome[4]) + (distantFront * population[activePopulation].chromosome[5]) + (distantLeft * population[activePopulation].chromosome[6]) + (distantRight * population[activePopulation].chromosome[7] );
+            try
+            {
+                //Calculating the outRotation from the input
+                var outRotate =
+                    (speed * population[activePopulation].chromosome[0]) +
+                    (distantFront * population[activePopulation].chromosome[1]) +
+                    (distantLeft * population[activePopulation].chromosome[2]) +
+                    (distantRight * population[activePopulation].chromosome[3]);
+                //Calculating the outSpeed from the input
+                var outSpeed =
+                    (speed * population[activePopulation].chromosome[4]) +
+                    (distantFront * population[activePopulation].chromosome[5]) +
+                    (distantLeft * population[activePopulat½    ion].chromosome[6]) +
+                    (distantRight * population[activePopulation].chromosome[7]);
+               
+                //Postive is Right and Negative is Left.
+                rotateCar(outRotate);
+                //Positive is Faster and Negative is Slower.
+                speedChange(outSpeed);
 
-            //--------OUT: Change the car left/right or/and Speed--------------------------
-            //Postive is Right and Negative is Left.
-            rotateCar(outRotate);  
-            //Positive is Faster and Negative is Slower.
-            speedChange(outSpeed);  
-            //Check for collision, for finding fitness.
-            collisionCheckPointsListe();
+
+                //Check for collision, for finding fitness.
+                collisionCheckPointsListe();
+            }
+            catch (err)
+            {
+                console.log("Error in GA_DriveCar " + err);
+            }
+
         }
       
         function GA_CreateNewPopulation()
@@ -138,8 +159,7 @@
             for (var i = 0; i < population.length; i++)
             {
                 var rand = parseInt(getRandomNumber(0, 100)) + 50; 
-                if (rand > 95) //just for safty
-                    rand = 95;
+               
                 var persentSum = 0;
                 for (var j = 0; j < population.length; j++)
                 {
@@ -150,6 +170,11 @@
                     }
                 }                
             }
+            if (newChromosomeList.length % 2 == 1) //Safety: Some time this is a problem.
+            {
+                newChromosomeList.pop(); //remove one, so that there is an equal number of chromosom.
+            }
+            console.log("Number of pairs selected = " + newChromosomeList.length);
             population = newChromosomeList;
             //--------Crossover operation----------------------------------------------------------
             newChromosomeList = [];
@@ -180,10 +205,13 @@
                     catch (err)
                     {
 
-                        console.log(err.message);
-                        console.log(firstChromosom);
-                        console.log(secondChromosom);
-                        console.log(crossOverPoint);
+                        console.log("error: " + err.message);
+                        console.log("crossOverPoint: " + crossOverPoint);
+                        console.log("j: "+ j);
+                        console.log("firstChromosom: " +firstChromosom);
+                        console.log("secondChromosom: " + secondChromosom);
+                        alert("error");
+                        
                     }
                 }
 
@@ -242,8 +270,7 @@
         function insertJsonChromosomeIntoSystem()
         {
             var jsonString = document.getElementById("bestCromosom").value;
-            population[0] = JSON.parse(jsonString);
-            activePopulation = 0;
+            population[activePopulation] = JSON.parse(jsonString);            
         }
         var minFitnessExeptable = 2;
         function calculateFitnessForCar()
